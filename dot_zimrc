@@ -1,0 +1,9 @@
+zmodule asciiship
+
+zmodule zsh-users/zsh-completions
+zmodule completion
+zmodule zsh-users/zsh-autosuggestions
+zmodule zsh-users/zsh-syntax-highlighting
+
+zmodule b4b4r07/zsh-vimode-visual
+zmodule dmitriy-korotayev/zsh-nvm

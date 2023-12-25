@@ -1,0 +1,11 @@
+break-countdown-seconds=1500
+lock-countdown-seconds=300
+postpone-countdown-seconds=180
+enabled=false
+display-seconds=true
+display-hours=false
+display-time=true
+display-icon=false
+allow-postpone=true
+auto-resume=false
+

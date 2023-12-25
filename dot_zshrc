@@ -1,0 +1,500 @@
+# Environment
+
+[[ -f ~/.zshenv ]] && source ~/.zshenv
+[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
+export LANG="en_US.UTF-8"
+export LC_ALL="en_US.UTF-8"
+export BROWSER="firefox"
+export EDITOR="nvim"
+export TERM='xterm-color'
+[[ -z "$SSH_CONNECTION" ]] && xset b off # Disable beeps
+export PATH="$HOME/bin:$PATH"
+
+# Startup
+
+cowthink $(fortune -c) # Cow greeting you on launch
+export PS1="%~ $ " # Status in terminal
+
+# Look
+if [[ -z "$SSH_CONNECTION" ]] ; then
+
+## TODO: dynamic-colors (NEEDED?)
+#export PATH="$HOME/.urxvt/dynamic-colors/bin:$PATH"
+# dynamic-colors init
+
+## TODO: Yaourt
+# export YAOURT_COLORS="nb=1:pkg=1:ver=1;32:lver=1;45:installed=1;42:grp=1;34:od=1;41;5:votes=1;44:dsc=0:other=1;35""
+
+fi
+
+## Right-side statusline
+
+### Git functions
+
+function git_dirty {
+    [[ $(git status 2> /dev/null | tail -n1) != "nothing to commit, working directory clean" ]] && echo "*"
+}
+function git_current_branch {
+    git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e "s/* \(.*\)/[\1$(git_dirty)]/"
+}
+git_status() {
+    # If not an ssh mountpoint (this would be too slow to respond)
+    if [[ ! -n "$(mount | grep "$(pwd -P) type fuse\.sshfs" )" ]] then
+        echo "$ZSH_THEME_GIT_PROMPT_PREFIX$(git_current_branch)$ZSH_THEME_GIT_PROMPT_SUFFIX"
+    fi
+}
+
+function zle-line-init zle-keymap-select {
+    VIM_PROMPT="%{$fg_bold[yellow]%} [% NORMAL]%  %{$reset_color%}"
+    RPS1="${${KEYMAP/vicmd/$VIM_PROMPT}/(main|viins)/}$(git_status) $EPS1"
+    zle reset-prompt
+}
+zle -N zle-line-init
+zle -N zle-keymap-select
+
+
+# Input
+
+## General
+
+### Emacs keybindings by default
+### Don't recommend to use vim keybindings except for big inline scripts
+bindkey -e
+### transition between modes takes 0.1s instead of 0.4s
+export KEYTIMEOUT=1
+
+## Keymaps
+
+### Use vim cli mode
+bindkey '^P' up-history
+bindkey '^N' down-history
+
+# ctrl-r starts searching history backward
+bindkey '^r' history-incremental-search-backward
+
+# Delete key fix
+bindkey "^[[3~" delete-char
+
+# Bang! Previous Command Hotkeys
+# print previous command but only the first nth arguments
+# Alt+1, Alt+2 ...etc
+# http://www.softpanorama.org/Scripting/Shellorama/bash_command_history_reuse.shtml#Bang_commands
+bindkey -s '\e1' "!:0 \t"        # last command
+bindkey -s '\e2' "!:0-1 \t"      # last command + 1st argument
+bindkey -s '\e3' "!:0-2 \t"      # last command + 1st-2nd argument
+bindkey -s '\e4' "!:0-3 \t"      # last command + 1st-3rd argument
+bindkey -s '\e5' "!:0-4 \t"      # last command + 1st-4th argument
+bindkey -s '\e`' "!:0- \t"       # all but the last argument
+bindkey -s '\e9' "!:0 !:2* \t"   # all but the 1st argument (aka 2nd word)
+
+### backspace and ^h working even after returning from command mode
+bindkey '^?' backward-delete-char
+bindkey '^h' backward-delete-char
+
+
+# Typing and completion
+
+## zsh completion
+autoload -Uz compinit
+compinit
+## Use bash-completion, if available
+autoload bashcompinit
+bashcompinit
+
+## cd, writing only path to directory
+setopt autocd
+## extended globbing (regex-like, ex. filename.{png,jpg})
+setopt extendedglob
+## auto-correction
+setopt correctall
+## Disable the need of `rehash` on new executable in $PATH
+setopt nohashdirs
+
+## Auto-rehash on completion (in case new binaries were added to $PATH)
+zstyle ":completion:*:commands" rehash 1
+# TODO: if [ -f /etc/bash_completion ]; then source /etc/bash_completion; fi
+
+## Don't complete uninteresting users
+zstyle ':completion:*:*:*:users' ignored-patterns \
+        avahi ftp mysql systemd-bus-proxy usbmux bacula git nobody \
+        systemd-journal-gateway uuidd bin ntp systemd-journal-remote \
+        colord http polkitd systemd-journal-upload daemon kdm postfix \
+        systemd-network dbus postgres systemd-resolve deluge \
+        systemd-timesync mail rtkit test
+## .... unless we really want to.
+zstyle '*' single-ignored show
+
+## ssh - config host entries
+zstyle -s ':completion:*:hosts' hosts _ssh_config
+[[ -r ~/.ssh/config ]] && _ssh_config+=($(cat ~/.ssh/config | sed -ne 's/Host[=\t ]//p'))
+zstyle ':completion:*:hosts' hosts $_ssh_config
+
+
+# History
+
+# Append to history file
+setopt appendhistory
+# Don't put duplicate lines in the history
+setopt hist_ignore_all_dups
+# Limits
+HISTFILE=~/.histfile
+HISTSIZE=10000
+SAVEHIST=10000
+
+
+# Plugins
+
+export NVM_DIR="$HOME/.nvm"
+export NVM_LAZY_LOAD=true
+export NVM_AUTO_USE=true
+
+## >Zim
+zstyle ':zim:zmodule' use 'degit'
+ZIM_HOME=~/.zim
+
+### Download zimfw plugin manager if missing.
+if [[ ! -e ${ZIM_HOME}/zimfw.zsh ]]; then
+  mkdir -p ${ZIM_HOME} && wget -nv -O ${ZIM_HOME}/zimfw.zsh \
+      https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh
+fi
+
+### Install missing modules, and update ${ZIM_HOME}/init.zsh if missing or outdated.
+if [[ ! ${ZIM_HOME}/init.zsh -nt ${ZDOTDIR:-${HOME}}/.zimrc ]]; then
+  source ${ZIM_HOME}/zimfw.zsh init -q
+fi
+
+### Initialize modules.
+source ${ZIM_HOME}/init.zsh
+
+## >fzf completion
+if [ -f /usr/share/fzf/key-bindings.zsh ]; then source "/usr/share/fzf/key-bindings.zsh"; fi
+if [ -f /usr/share/fzf/completion.zsh ]; then source "/usr/share/fzf/completion.zsh"; fi
+
+
+# Packages / Libraries / Tools
+
+## >nnn
+export NNN_PLUG='f:finder;o:fzopen;p:mocq;d:diffs;t:nmount;v:imgview'
+# move pwd to recently closed directory by nnn
+n ()
+{
+    # Block nesting of nnn in subshells
+    [ "${NNNLVL:-0}" -eq 0 ] || {
+        echo "nnn is already running"
+        return
+    }
+
+    # The behaviour is set to cd on quit (nnn checks if NNN_TMPFILE is set)
+    # If NNN_TMPFILE is set to a custom path, it must be exported for nnn to
+    # see. To cd on quit only on ^G, remove the "export" and make sure not to
+    # use a custom path, i.e. set NNN_TMPFILE *exactly* as follows:
+    #      NNN_TMPFILE="${XDG_CONFIG_HOME:-$HOME/.config}/nnn/.lastd"
+    export NNN_TMPFILE="${XDG_CONFIG_HOME:-$HOME/.config}/nnn/.lastd"
+
+    # Unmask ^Q (, ^V etc.) (if required, see `stty -a`) to Quit nnn
+    # stty start undef
+    # stty stop undef
+    # stty lwrap undef
+    # stty lnext undef
+
+    # The command builtin allows one to alias nnn to n, if desired, without
+    # making an infinitely recursive alias
+    command nnn "$@"
+
+    [ ! -f "$NNN_TMPFILE" ] || {
+        . "$NNN_TMPFILE"
+        rm -f "$NNN_TMPFILE" > /dev/null
+    }
+}
+
+## >Android Studio
+export ANDROID_SDK_ROOT="$HOME/.android/sdk"
+export ANDROID_HOME="$HOME/.android/sdk"
+export PATH="$ANDROID_SDK_ROOT/emulator:$ANDROID_SDK_ROOT/platform-tools/bin:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$PATH"
+
+## >NPM / Yarn
+### User-level global node modules
+export PATH="$HOME/.node_modules/bin:$PATH"
+export PATH="$HOME/.yarn/bin:$PATH"
+
+## >Python
+export PATH=$HOME/.local/bin:$PATH
+eval "$(register-python-argcomplete pipx)"
+
+# IPython default config directory
+export IPYTHONDIR=$HOME/.ipython/profile_default/
+
+# auto-activate venv
+python_venv() {
+  MYVENV=./venv
+  # when you cd into a folder that contains $MYVENV
+  [[ -d $MYVENV ]] && source $MYVENV/bin/activate > /dev/null 2>&1
+  # when you cd into a folder that doesn't
+  [[ ! -d $MYVENV ]] && deactivate > /dev/null 2>&1
+}
+autoload -U add-zsh-hook
+add-zsh-hook chpwd python_venv
+
+### Add personal projects to import path
+export PYTHONPATH="$HOME/Projects"
+
+### pips(): pip install & save
+function pips() {
+  for pkg in $@; do
+    pip install "$pkg" && {
+      name="$(pip show "$pkg" | grep Name: | awk '{print $2}')";
+      version="$(pip show "$pkg" | grep Version: | awk '{print $2}')";
+      echo "${name}==${version}" >> requirements.txt;
+    }
+  done
+}
+
+## >Ruby
+#export GEM_HOME="$(ruby -e 'puts Gem.user_dir')"
+#export PATH="$PATH:$GEM_HOME/bin"
+
+## >RVM
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
+export PATH="$PATH:$HOME/.rvm/bin"
+
+## >ZMV
+## http://onethingwell.org/post/24608988305/zmv
+autoload zmv
+
+## >Composer / wp-cli
+export PATH="$PATH:$HOME/.config/composer/vendor/bin"
+
+## >Flatpak
+export XDG_DATA_DIRS="/var/lib/flatpak/exports/share:$HOME/.local/share/flatpak/exports/share:$XDG_DATA_DIRS"
+
+# >Torsocks
+#export LD_PRELOAD="/usr/lib/x86_64-linux-gnu/torsocks/libtorsocks.so"
+#source /usr/bin/torsocks on
+
+# >Java
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
+export PATH=$JAVA_HOME/bin:/usr/share/java:/usr/lib/eclipse/plugins:$PATH
+
+# >Eclipse
+export PATH=/opt/eclipse:$PATH
+
+
+# Aliases
+
+## Navigation
+alias x='cd "$(xplr --print-pwd-as-result)"'
+# alias x='xplr'
+alias .='pwd'
+alias ..='cd ..'
+alias ...='cd ../..'
+
+## Sudo shortcuts
+if [ $UID -ne 0 ]; then
+  alias svim='sudo -e'
+  alias root='sudo su'
+  alias scat='sudo cat'
+  alias reboot='sudo systemctl reboot'
+  alias poweroff='sudo systemctl poweroff'
+  alias netctl='sudo netctl'
+fi
+
+## Defaults
+alias tmux='tmux -2'
+alias mkdir='mkdir -p'
+alias grep='grep --color=auto'
+alias more='less'
+alias df='df -h'            # reports disk usage
+alias du='du -c -h'         # folder disk usage
+alias diff='colordiff'      # requires colordiff package
+alias info='info --vi-keys'
+alias ping='ping -c 5'      # ping 5 times
+alias feh='feh -.'
+
+## Corrections (TODO)
+alias cd..='cd ..'
+
+## Directory sizes
+alias du1='du --max-depth=1'
+## Search
+### -recursively
+alias ff='find . -name $*'
+### -in commands history
+alias hist='history | grep'         # requires an argument
+### -for a process
+alias pgg='ps -Af | grep'           # requires an argument
+
+## >ls
+alias ls='ls -hF --color=auto'
+alias ll='ls -l'
+alias lr='ls -R'                    # recursive ls
+alias la='ll -a'
+alias lx='ll -BX'                   # sort by extension
+alias lz='ll -rS'                   # sort by size
+alias lt='ll -rt'                   # sort by date
+alias lm='la | more'
+### sudo ls
+alias sls='sudo ls -hF --color=auto'
+alias sll='sudo ls -hFl --color=auto'
+alias sll='sudo ls -hFla --color=auto'
+
+# >yay/pacman
+(( $+commands[yay] )) && package_manager='yay' || package_manager='sudo pacman'
+alias y="  $package_manager"                  # default action       - yay
+alias ys=" $package_manager -S"               # '[s]ync'             - install one or more packages
+alias yu=" $package_manager -Syu"             # '[u]pdate'           - upgrade all packages to their newest version
+alias yua="$package_manager -Syua"            # '[u]pdate with [aur]'- upgrade all packages to their newest version + aur
+alias yr=" $package_manager -Rs"              # '[r]emove'           - uninstall one or more packages
+alias yc=" $package_manager -Scc"             # '[c]lean cache'      - delete all not currently installed package files
+alias yss="$package_manager -Ss"              # '[Ss]earch'           - search for a package using one or more keywords
+alias yi=" $package_manager -Si"              # '[i]nfo'             - show information about a package
+alias ylo="$package_manager -Qdt"             # '[l]ist [o]rphans'   - list all packages which are orphaned
+alias ylf="$package_manager -Ql"              # '[l]ist [f]iles'     - list all files installed by a given package
+# [yrefresh]: Use Reflector to populate mirrorlist with fastest mirrors
+alias yref="sudo reflector --verbose --sort rate -c BE,CZ,DK,EE,FI,LT,NL,NO,PL,LV --protocol https --completion-percent 80 --save /etc/pacman.d/mirrorlist --download-timeout 60"
+alias yunlock="sudo rm /var/lib/pacman/db.lck"
+
+# >systemctl
+alias sy="sudo systemctl"
+alias sys="sudo systemctl start"
+alias sysp="sudo systemctl stop"
+alias syst="sudo systemctl status"
+alias syr="sudo systemctl restart"
+alias sye="sudo systemctl enable"
+alias syd="sudo systemctl disable"
+alias sydr="sudo systemctl daemon-reload"
+# >> user services
+alias su="systemctl --user"
+alias sus="systemctl --user start"
+alias susp="systemctl --user stop"
+alias sust="systemctl --user status"
+alias sur="systemctl --user restart"
+alias sue="systemctl --user enable"
+alias sud="systemctl --user disable"
+alias sudr="sudo systemctl daemon-reload"
+
+## >xclip
+alias xc='xclip -selection clipboard'	# copy to clipboard, ctrl+c, ctrl+shift+c
+alias xcp='xclip -selection clipboard -o'	# paste from clipboard, ctrl+v, ctrl+shift+v
+alias xcs='xclip -selection primary -o'	# paste from highlight, middle click, shift+insert
+
+# >nordvpn
+alias nv="nordvpn"
+alias nvc="nordvpn c"
+alias nvs="nordvpn status"
+alias nvce="nordvpn c Estonia"
+alias nvcd="nordvpn c Double_VPN"
+alias nvco="nordvpn c Onion_Over_VPN"
+alias nvd="nordvpn disconnect"
+
+# >archtorify
+alias at="sudo archtorify"
+alias att="sudo archtorify -t"
+alias atr="sudo archtorify --restart"
+alias atc="sudo archtorify -c"
+
+# >torsocks
+alias socksoff="source torsocks off"
+alias sockson="source torsocks on"
+
+## >speedtest
+alias st="speedtest-cli --no-upload --single --bytes"
+alias stogre="speedtest-cli --no-upload --single --bytes --server 22608"
+
+## >journalctl
+jct() {
+    source torsocks off
+    journalctl $1
+    source torsocks on
+}
+jctr() { jct "-r" }
+
+
+# Functions (simple, mostly restarting)
+
+## >zsh
+function erc { $EDITOR ~/.zshrc; rerc }
+function rerc { source ~/.zshrc }
+
+## >polybar
+function epoly { $EDITOR ~/.config/polybar/config.ini; repoly }
+function repoly { source ~/.config/polybar/start-polybar.sh }
+## >picom
+function epicom { $EDITOR ~/.config/picom.conf; repicom }
+function repicom { pkill picom; sleep 1; picom -b }
+
+## >pacman
+function repacman { sudo rm /var/lib/pacman/db.lck; }
+## >pulseaudio
+function repulse { pulseaudio -k && pulseaudio --start }
+## >psmouse
+function remouse { sudo modprobe -r psmouse; sudo modprobe psmouse; }
+## >xneur
+function rexneur { pkill xneur && xneur & }
+
+
+# Functions (more complex)
+
+# -Open [f]ile manager in cwd, optional repeat count
+f() {
+    for i in {1..${1:=1}};
+    do nohup thunar . >/dev/null 2>&1&;
+    done
+}
+
+# -Open [n]ew terminal in cwd, optional repeat count
+n() {
+    for i in {1..${1:=1}};
+    do nohup $TERM >/dev/null 2>&1&;
+    done
+}
+
+# -[mk]dir -p & cd
+mkcd() {
+    dir="$*"
+    mkdir -p "$dir" && cd "$dir"
+}
+
+# -[c]opy via [rs]ync
+crs() {
+  rsync --archive -hh --partial --info=stats1,progress2 --modify-window=1 "$@"
+}
+# -[m]ove via [rs]ync
+mrs() {
+  rsync --archive -hh --partial --info=stats1,progress2 --modify-window=1 --remove-source-files "$@"
+}
+
+
+# FINISH
+
+zstyle :compinstall filename '/home/dmitriy/.zshrc'
+# Launch tmux by default
+# [[ -z "$TMUX" ]] && tmux new
+
+
+# PROFILING
+
+### set the trace prompt to include seconds, nanoseconds, script name and line number
+#zmodload zsh/datetime
+#setopt promptsubst
+#PS4='+$EPOCHREALTIME %N:%i> '
+### save file stderr to file descriptor 3 and redirect stderr (including trace
+### output) to a file with the script's PID as an extension
+#exec 3>&2 2>/tmp/startlog.$$
+### set options to turn on tracing and expansion of commands contained in the prompt
+#setopt xtrace prompt_subst
+#
+### turn off tracing
+#unsetopt xtrace
+### restore stderr to the value saved in FD 3
+#exec 2>&3 3>&-
+
+
+# ARCHIVE
+
+# >alias_for()
+#_aliases="$(alias -Lr 2>/dev/null || alias)"
+#alias_for() {
+  #[[ $1 =~ '[[:punct:]]' ]] && return
+  #local found="$( echo "$_aliases" | sed -nE "/^alias ${1}='?(.+)/s//\\1/p" )"
+  #[[ -n $found ]] && echo "${found%\'}"
+#}
