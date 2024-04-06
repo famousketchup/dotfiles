@@ -37,47 +37,158 @@
           - firefox
           - gh
           - gcc
-          # - ripgrep
-          # - poetry
           - fzf
           - ffmpeg
           - make
           - patch
-          # - bzip2
-          # - bzip2-devel
-          # - readline-devel
+          - bzip2
+          - readline
           - sqlite
-          # - sqlite-devel
-          # - openssl-devel
-          # - tk-devel
-          # - libffi-devel
-          # - xz-devel
-          # - libuuid-devel
-          # - gdbm-libs
-          # - libnsl2
-          # - luarocks
-          # - wl-clipboard
-          # - fd-find
-          # - gcc-c++
-          # - doctl
-          # - helix
-          # - "@Development Tools"
-          # - "@C Development Tools and Libraries"
+          - openssl
+          - tk
+          - xz
+          - wl-clipboard
+          - fd
           - autoconf
-          # - ncurses-devel
-          # - wxGTK-devel
-          # - wxBase
-          # - java-1.8.0-openjdk-devel
-          # - libiodbc
-          # - unixODBC-devel.x86_64
-          # - erlang-odbc.x86_64
-          # - libxslt
-          # - fop
-          # - podman-compose
-          # - inotify-tools
-          # - blender
-          # - toilet
-          # - dotnet-sdk-8.0
+          - ncurses
+          - inotify-tools
+          - binutils
+          - btop
+          - dracula-gtk-theme
+          - archlinux-keyring
+          - chaotic-keyring
+          - chromium
+          - composer
+          - cowfortune
+          - dhclient
+          - dialog
+          - diffutils
+          - dosfstools
+          - e2fsprogs
+          - efibootmgr
+          - exfatprogs
+          - feh
+          - fff
+          - file-roller
+          - fontforge
+          - freetype2
+          - gawk
+          - gdu
+          - gitg
+          - github-cli
+          - gnome-keyring
+          - gparted
+          - gptfdisk
+          - grep
+          - gst-pugin-pipewire
+          - gst-plugins-bad
+          - gst-plugins-ugly
+          - gvfs
+          - gvfs-afc
+          - gvfs-gphoto2
+          - gvfs-mtp
+          - gvfs-nfs
+          - gvfs-smb
+          - gzip
+          - hdparm
+          - hunspell-en
+          - hunspell-ru
+          - hwinfo
+          - inetutils
+          - ipython
+          - jdk11-openjdk
+          - ifsutils
+          - keepassxc
+          - lazygit
+          - less
+          - lib32-gnutls
+          - lib32-gst-plugins-base
+          - lib32-gst-plugins-good
+          - lib32-gstreamer
+          - lib32-libcups
+          - lib32-libxcomposite
+          - lib32-libxinerama
+          - lib32-pipewire-jack
+          - libtool
+          - lightdm-slick-greeter
+          - make
+          - man-db
+          - man-pages
+          - mdadm
+          - menulibre
+          - ncdu
+          - ncmpcpp
+          - neofetch
+          - net-tools
+          - netctl
+          - network-manager-applet
+          - networkmanager
+          - nfs-utils
+          - nnn
+          - noto-fonts
+          - npm
+          - ntfs-3g
+          - ntp
+          - nvm
+          - patch
+          - perl
+          - perl-file-mimeinfo
+          - pkgconf
+          - pkgfile
+          - polybar
+          - python-pip
+          - python-pipx
+          - ranger
+          - rsync
+          - sed
+          - sqliteman
+          - ssh-audit
+          - sshfs
+          - syncthing
+          - syncthingtray
+          - sysfsutils
+          - tela-icon-theme
+          - testdisk
+          - thunar
+          - thunar-archive-plugin
+          - thunar-dropbox
+          - thunar-media-tags-plugin
+          - thynar-volman
+          - tmuxp
+          - torsocks
+          - trash-cli
+          - udiskie
+          - unrar
+          - unzip
+          - usbutils
+          - veracrypt
+          - vlc
+          - w3m
+          - wget
+          - which
+          - wpa_supplicant
+          - xclip
+          - xdg-utils
+          - xdotool
+          - xfce4
+          - xfconf
+          - xfdesktop
+          - xfsprogs
+          - xorg-server
+          - xodg-xinit
+          - xorg-xinput
+          - xorg-xkill
+          - xorg-xrandr
+          - xorg-xwininfo
+          - xsel
+          - xz
+          - zsh-autosuggestions
+          - zsh-lovers
+          - zsh-syntax-highlighting
+          - zsh-theme-powerlevel10k
+          - zshdb
+          # - ripgrep
+          # - poetry
         state: present
 
     - name: Change shell to zsh
