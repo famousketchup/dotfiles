@@ -1,4 +1,0 @@
-zsh-users/zsh-completions
-zsh-users/zsh-syntax-highlighting
-b4b4r07/zsh-vimode-visual
-dmitriy-korotayev/zsh-nvm

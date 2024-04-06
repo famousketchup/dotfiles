@@ -1,1 +1,4 @@
 .DS_Store
+
+# Files, related to specific project
+/rel

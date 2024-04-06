@@ -1,0 +1,107 @@
+---
+- name: Machine setup
+  hosts: localhost
+  become: true
+  connection: local
+  gather_facts: true
+  vars:
+    flyctl_version: "0.1.130"
+    pulumi_version: "v3.94.2"
+
+  tasks:
+    - name: Get my user
+      ansible.builtin.set_fact:
+        remote_regular_user: "{{ ansible_env.SUDO_USER or ansible_user_id }}"
+
+    - name: Full system upgrade
+      community.general.pacman:
+        update_cache: true
+        upgrade: true
+
+    - name: Install packages
+      ansible.community.pacman:
+        name:
+          # dot_gitconfig, dot_gitignore
+          - git
+          # dot_config/nvim
+          - neovim
+          # dot_tmux.conf
+          - tmux
+          # dot_urxvt, dot_Xresources
+          - urxvt
+          # dot_zshrc, dot_zimrc, dot_zsh/, dot_zshenv,
+          # dot_zshenv.local.sample
+          - zsh
+
+          - htop
+          - firefox
+          - gh
+          - gcc
+          # - ripgrep
+          # - poetry
+          - fzf
+          - ffmpeg
+          - make
+          - patch
+          # - bzip2
+          # - bzip2-devel
+          # - readline-devel
+          - sqlite
+          # - sqlite-devel
+          # - openssl-devel
+          # - tk-devel
+          # - libffi-devel
+          # - xz-devel
+          # - libuuid-devel
+          # - gdbm-libs
+          # - libnsl2
+          # - luarocks
+          # - wl-clipboard
+          # - fd-find
+          # - gcc-c++
+          # - doctl
+          # - helix
+          # - "@Development Tools"
+          # - "@C Development Tools and Libraries"
+          - autoconf
+          # - ncurses-devel
+          # - wxGTK-devel
+          # - wxBase
+          # - java-1.8.0-openjdk-devel
+          # - libiodbc
+          # - unixODBC-devel.x86_64
+          # - erlang-odbc.x86_64
+          # - libxslt
+          # - fop
+          # - podman-compose
+          # - inotify-tools
+          # - blender
+          # - toilet
+          # - dotnet-sdk-8.0
+        state: present
+
+    - name: Change shell to zsh
+      ansible.builtin.user:
+        name: "{{ remote_regular_user }}"
+        shell: /usr/bin/zsh
+
+    # - name: Install Flatpak packages
+    #   community.general.flatpak:
+    #     name:
+    #       - com.obsproject.Studio
+    #       - org.videolan.VLC
+    #       - org.tenacityaudio.Tenacity
+    #       - md.obsidian.Obsidian
+    #       - org.gimp.GIMP
+    #       - rest.insomnia.Insomnia
+    #       - com.github.johnfactotum.Foliate
+    #       - org.gnome.meld
+    #       - org.sqlitebrowser.sqlitebrowser
+    #     state: present
+
+    # - name: Ensure fonts directory
+    #   ansible.builtin.file:
+    #     path: "~{{ remote_regular_user }}/.fonts"
+    #     state: directory
+    #     mode: "0755"
+    #     owner: "{{ remote_regular_user }}"
