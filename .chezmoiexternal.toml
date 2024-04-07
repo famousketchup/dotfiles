@@ -1,60 +1,72 @@
 [".config/nvim"]
-  type = "archive"
-  url = "https://github.com/AstroNvim/AstroNvim/archive/master.tar.gz"
-  exact = true
-  stripComponents = 1
-  refreshPeriod = "168h"
+type = "archive"
+url = "https://github.com/dmitriy-korotayev/AstroNVim/archive/master.tar.gz"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
 [".config/nvim/lua/user"]
-  type = "archive"
-  url = "https://github.com/dmitriy-korotayev/AstroNVimUser/archive/master.tar.gz"
-  exact = true
-  stripComponents = 1
-  refreshPeriod = "168h"
-[".i3/i3-extras"]
-  type = "archive"
-  url = "https://github.com/dmitriy-korotayev/i3-extras/archive/master.tar.gz"
-  exact = true
-  stripComponents = 1
-  refreshPeriod = "168h"
-[".urxvt/dircolors-solarized"]
-  type = "archive"
-  url = "https://github.com/seebi/dircolors-solarized/archive/master.tar.gz"
-  exact = true
-  stripComponents = 1
-  refreshPeriod = "168h"
-[".urxvt/dynamic-colors"]
-  type = "archive"
-  url = "https://github.com/dmitriy-korotayev/dynamic-colors/archive/master.tar.gz"
-  exact = true
-  stripComponents = 1
-  refreshPeriod = "168h"
-[".urxvt/urxvt-perls"]
-  type = "archive"
-  url = "https://github.com/muennich/urxvt-perls/archive/master.tar.gz"
-  exact = true
-  stripComponents = 1
-  refreshPeriod = "168h"
-[".vim/UltiSnips/vim-ultisnips-css"]
-  type = "archive"
-  url = "https://github.com/dmitriy-korotayev/i3-extras/archive/master.tar.gz"
-  exact = true
-  stripComponents = 1
-  refreshPeriod = "168h"
-[".vim/bundle/Vundle.vim"]
-  type = "archive"
-  url = "https://github.com/gmarik/Vundle.vim/archive/master.tar.gz"
-  exact = true
-  stripComponents = 1
-  refreshPeriod = "168h"
-[".zsh/oh-my-zsh"]
-  type = "archive"
-  url = "https://github.com/robbyrussell/oh-my-zsh/archive/master.tar.gz"
-  exact = true
-  stripComponents = 1
-  refreshPeriod = "168h"
+type = "archive"
+url = "https://github.com/dmitriy-korotayev/AstroNVimUser/archive/master.tar.gz"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
+[".config/polybar-themes"]
+type = "archive"
+url = "https://github.com/adi1090x/polybar-themes/archive/master.tar.gz"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
+
+[".i3/bin/autorandr"]
+type = "archive"
+url = "https://github.com/wertarbyte/autorandr/archive/master.tar.gz"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
 [".i3/i3blocks"]
-  type = "archive"
-  url = "https://github.com/dmitriy-korotayev/i3blocks/archive/master.tar.gz"
-  exact = true
-  stripComponents = 1
-  refreshPeriod = "168h"
+type = "archive"
+url = "https://github.com/dmitriy-korotayev/i3blocks/archive/master.tar.gz"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
+[".i3/i3-extras"]
+type = "archive"
+url = "https://github.com/dmitriy-korotayev/i3-extras/archive/master.tar.gz"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
+
+[".urxvt/dynamic-colors"]
+type = "archive"
+url = "https://github.com/dmitriy-korotayev/dynamic-colors/archive/master.tar.gz"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
+[".urxvt/dircolors-solarized"]
+type = "archive"
+url = "https://github.com/seebi/dircolors-solarized/archive/master.tar.gz"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
+[".urxvt/urxvt-perls"]
+type = "archive"
+url = "https://github.com/xyb3rt/urxvt-perls/archive/master.tar.gz"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
+
+[".zsh/oh-my-zsh"]
+type = "archive"
+url = "https://github.com/robbyrussell/oh-my-zsh/archive/master.tar.gz"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"

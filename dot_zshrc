@@ -6,7 +6,7 @@ export LANG="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
 export BROWSER="firefox"
 export EDITOR="nvim"
-export TERM='xterm-color'
+export TERM='terminology'
 [[ -z "$SSH_CONNECTION" ]] && xset b off # Disable beeps
 export PATH="$HOME/bin:$PATH"
 
@@ -218,7 +218,27 @@ export PATH="$HOME/.node_modules/bin:$PATH"
 export PATH="$HOME/.yarn/bin:$PATH"
 
 ## >Python
+
+# Virtual environment aliases
+alias venvc="python3 -m venv venv"
+alias venvcreate="python3 -m venv venv"
+alias venva="source venv/bin/activate"
+alias venvactivate="source venv/bin/activate"
+alias venvi="python3 -m pip install --user virtualenv"
+alias venvinstall="python3 -m pip install --user virtualenv"
+alias venvd="deactivate"
+
+# Dependency and pip aliases
+alias pipi="pip install"
+alias pipu="pip uninstall"
+alias pipl="pip list"
+alias pipf="pip freeze > requirements.txt"
+alias pipr="pip install -r requirements.txt"
+
+# More binaries
 export PATH=$HOME/.local/bin:$PATH
+
+# Autocompletions
 eval "$(register-python-argcomplete pipx)"
 
 # IPython default config directory
@@ -236,7 +256,7 @@ autoload -U add-zsh-hook
 add-zsh-hook chpwd python_venv
 
 ### Add personal projects to import path
-export PYTHONPATH="$HOME/Projects"
+export PYTHONPATH="$PYTHONPATH:venv/lib/python3.11/site-packages/:$HOME/Projects"
 
 ### pips(): pip install & save
 function pips() {
@@ -248,6 +268,9 @@ function pips() {
     }
   done
 }
+
+## >> Sourcery plugin
+alias pysr="sourcery review ."
 
 ## >Ruby
 #export GEM_HOME="$(ruby -e 'puts Gem.user_dir')"
@@ -300,6 +323,7 @@ fi
 
 ## Defaults
 alias tmux='tmux -2'
+alias mosh='mosh --no-init'
 alias mkdir='mkdir -p'
 alias grep='grep --color=auto'
 alias more='less'
@@ -310,7 +334,7 @@ alias info='info --vi-keys'
 alias ping='ping -c 5'      # ping 5 times
 alias feh='feh -.'
 
-## Corrections (TODO)
+## Corrections
 alias cd..='cd ..'
 
 ## Directory sizes
@@ -337,6 +361,9 @@ alias sls='sudo ls -hF --color=auto'
 alias sll='sudo ls -hFl --color=auto'
 alias sll='sudo ls -hFla --color=auto'
 
+# >btop
+alias b="btop"
+
 # >yay/pacman
 (( $+commands[yay] )) && package_manager='yay' || package_manager='sudo pacman'
 alias y="  $package_manager"                  # default action       - yay
@@ -352,6 +379,7 @@ alias ylf="$package_manager -Ql"              # '[l]ist [f]iles'     - list all 
 # [yrefresh]: Use Reflector to populate mirrorlist with fastest mirrors
 alias yref="sudo reflector --verbose --sort rate -c BE,CZ,DK,EE,FI,LT,NL,NO,PL,LV --protocol https --completion-percent 80 --save /etc/pacman.d/mirrorlist --download-timeout 60"
 alias yunlock="sudo rm /var/lib/pacman/db.lck"
+alias ylatest="expac --timefmt='%F %T' '%l %n' | sort -n | less"
 
 # >systemctl
 alias sy="sudo systemctl"
@@ -363,14 +391,14 @@ alias sye="sudo systemctl enable"
 alias syd="sudo systemctl disable"
 alias sydr="sudo systemctl daemon-reload"
 # >> user services
-alias su="systemctl --user"
+alias suu="systemctl --user"
 alias sus="systemctl --user start"
 alias susp="systemctl --user stop"
 alias sust="systemctl --user status"
 alias sur="systemctl --user restart"
 alias sue="systemctl --user enable"
 alias sud="systemctl --user disable"
-alias sudr="sudo systemctl daemon-reload"
+alias sudr="systemctl daemon-reload"
 
 ## >xclip
 alias xc='xclip -selection clipboard'	# copy to clipboard, ctrl+c, ctrl+shift+c
@@ -385,6 +413,27 @@ alias nvce="nordvpn c Estonia"
 alias nvcd="nordvpn c Double_VPN"
 alias nvco="nordvpn c Onion_Over_VPN"
 alias nvd="nordvpn disconnect"
+
+# >vyprvpn
+alias vv="vyprvpn"
+alias vvr="vyprvpn refresh"
+alias vvc="vyprvpn connect"
+alias vvd="vyprvpn disconnect"
+alias vvs="vyprvpn server" # [show | set | list]
+alias vvp="vyprvpn protocol" # [show | set | list]
+
+# >gcalcli
+alias c="gcalcli"
+alias cw="gcalcli calw"
+alias cm="gcalcli calm"
+alias ca="gcalcli agenda"
+alias cl="gcalcli list"
+alias cld="gcalcli delete"
+alias clc="gcalcli quick"
+alias clr="gcalcli remind"
+# ...
+alias bdays="gcalcli --calendar 'Facebook Birthdays' calw"
+alias bdaysm="gcalcli --calendar 'Facebook Birthdays' calm"
 
 # >archtorify
 alias at="sudo archtorify"
@@ -409,7 +458,12 @@ jct() {
 jctr() { jct "-r" }
 
 
-# Functions (simple, mostly restarting)
+# Functions & custtom aliases (simple, mostly restarting)
+
+## ~Get my ip
+alias myip="curl ipinfo.io/ip"
+alias myipi="curl ipinfo.io"
+alias myipinfo="curl ipinfo.io"
 
 ## >zsh
 function erc { $EDITOR ~/.zshrc; rerc }
@@ -422,6 +476,8 @@ function repoly { source ~/.config/polybar/start-polybar.sh }
 function epicom { $EDITOR ~/.config/picom.conf; repicom }
 function repicom { pkill picom; sleep 1; picom -b }
 
+## > tmux
+alias retmux="source-file ~/.tmux.conf"
 ## >pacman
 function repacman { sudo rm /var/lib/pacman/db.lck; }
 ## >pulseaudio
@@ -430,6 +486,8 @@ function repulse { pulseaudio -k && pulseaudio --start }
 function remouse { sudo modprobe -r psmouse; sudo modprobe psmouse; }
 ## >xneur
 function rexneur { pkill xneur && xneur & }
+## >pam_usb
+function repam { rm -rf ~/.pamusb; pamusb-check --debug $USER; }
 
 
 # Functions (more complex)
