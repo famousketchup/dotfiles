@@ -54,6 +54,30 @@ timerinfo=30m 0s
 is_countdown=true
 autostart=false
 
+[G7]
+timername=45m
+time=2700
+timercommand=
+timerinfo=45m 0s
+is_countdown=true
+autostart=false
+
+[G8]
+timername=1h
+time=3600
+timercommand=
+timerinfo=1h 0m 0s
+is_countdown=true
+autostart=false
+
+[G9]
+timername=1h30m
+time=5400
+timercommand=
+timerinfo=1h 30m 0s
+is_countdown=true
+autostart=false
+
 [others]
 nowin_if_alarm=false
 use_global_command=true

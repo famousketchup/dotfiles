@@ -1,7 +1,21 @@
 zmodule asciiship
+zmodule completion
+zmodule environment
+zmodule input
+
+zmodule archive
+zmodule magic-enter
+zmodule pvenv
+zmodule ssh
+zmodule utility
+
+zmodule duration-info
+
+zmodule joke/zim-chezmoi
+
+zmodule bira
 
 zmodule zsh-users/zsh-completions
-zmodule completion
 zmodule zsh-users/zsh-autosuggestions
 zmodule zsh-users/zsh-syntax-highlighting
 

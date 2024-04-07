@@ -1,1 +1,12 @@
+.i3/bin/autorandr
+.i3/i3blocks
+.i3/i3-extras
+
+.zsh/oh-my-zsh
+
+rel
+
+.urxvt/dircolors-solarized
+
+install_ansible.sh
 README.md

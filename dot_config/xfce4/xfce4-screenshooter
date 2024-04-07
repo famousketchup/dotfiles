@@ -1,11 +1,11 @@
 app=phototonic
-custom_action_command=none
+custom_action_command=/usr/lib/xfce4/screenshooter/scripts/imgur-upload.sh %f %imgur_client_id
 last_user=
 last_extension=png
 screenshot_dir=file:/home/freek/Pictures
 enable_imgur_upload=true
-show_in_folder=false
-action=1
+show_in_folder=true
+action=2
 delay=0
 region=1
 show_mouse=1

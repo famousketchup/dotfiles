@@ -3,7 +3,6 @@
 [[ -f ~/.zshenv ]] && source ~/.zshenv
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
 export LANG="en_US.UTF-8"
-export LC_ALL="en_US.UTF-8"
 export BROWSER="firefox"
 export EDITOR="nvim"
 export TERM='terminology'
@@ -101,10 +100,6 @@ compinit
 autoload bashcompinit
 bashcompinit
 
-## cd, writing only path to directory
-setopt autocd
-## extended globbing (regex-like, ex. filename.{png,jpg})
-setopt extendedglob
 ## auto-correction
 setopt correctall
 ## Disable the need of `rehash` on new executable in $PATH
@@ -134,8 +129,6 @@ zstyle ':completion:*:hosts' hosts $_ssh_config
 
 # Append to history file
 setopt appendhistory
-# Don't put duplicate lines in the history
-setopt hist_ignore_all_dups
 # Limits
 HISTFILE=~/.histfile
 HISTSIZE=10000
@@ -272,6 +265,18 @@ function pips() {
 ## >> Sourcery plugin
 alias pysr="sourcery review ."
 
+## >Chezmoi
+alias ch="chezmoi"
+alias cha="chezmoi add"
+alias chap="chezmoi apply"
+alias chr="chezmoi remove"
+alias chu="chezmoi update"
+alias chcd="chezmoi cd"
+alias chm="chezmoi merge"
+alias chma="chezmoi merge-all"
+alias chra="chezmoi re-add"
+alias chs="chezmoi status"
+
 ## >Ruby
 #export GEM_HOME="$(ruby -e 'puts Gem.user_dir')"
 #export PATH="$PATH:$GEM_HOME/bin"
@@ -327,8 +332,6 @@ alias mosh='mosh --no-init'
 alias mkdir='mkdir -p'
 alias grep='grep --color=auto'
 alias more='less'
-alias df='df -h'            # reports disk usage
-alias du='du -c -h'         # folder disk usage
 alias diff='colordiff'      # requires colordiff package
 alias info='info --vi-keys'
 alias ping='ping -c 5'      # ping 5 times
@@ -348,14 +351,8 @@ alias hist='history | grep'         # requires an argument
 alias pgg='ps -Af | grep'           # requires an argument
 
 ## >ls
-alias ls='ls -hF --color=auto'
-alias ll='ls -l'
 alias lr='ls -R'                    # recursive ls
 alias la='ll -a'
-alias lx='ll -BX'                   # sort by extension
-alias lz='ll -rS'                   # sort by size
-alias lt='ll -rt'                   # sort by date
-alias lm='la | more'
 ### sudo ls
 alias sls='sudo ls -hF --color=auto'
 alias sll='sudo ls -hFl --color=auto'
@@ -470,8 +467,8 @@ function erc { $EDITOR ~/.zshrc; rerc }
 function rerc { source ~/.zshrc }
 
 ## >polybar
-function epoly { $EDITOR ~/.config/polybar/config.ini; repoly }
-function repoly { source ~/.config/polybar/start-polybar.sh }
+function epoly { $EDITOR ~/.config/polybar/cuts/config.ini; repoly }
+function repoly { pkill polybar; source ~/.config/polybar/cuts/launch.sh }
 ## >picom
 function epicom { $EDITOR ~/.config/picom.conf; repicom }
 function repicom { pkill picom; sleep 1; picom -b }
@@ -504,12 +501,6 @@ n() {
     for i in {1..${1:=1}};
     do nohup $TERM >/dev/null 2>&1&;
     done
-}
-
-# -[mk]dir -p & cd
-mkcd() {
-    dir="$*"
-    mkdir -p "$dir" && cd "$dir"
 }
 
 # -[c]opy via [rs]ync
