@@ -14,7 +14,7 @@ experience on any Linux machine utilizing [Chezmoi](https://chezmoi.io), the dot
 *This automated setup is currently tested only on Arch-based machines.* \
 In case dotfiles will be used by at least several users, I'll consider making it more universal. 🙃
 
-![GitHub Release](https://img.shields.io/github/v/release/dmitriy-korotayev/pytgbot-autopost)
+![GitHub Release](https://img.shields.io/github/v/release/dmitriy-korotayev/dotfiles)
 ![Python Version](https://img.shields.io/badge/python-3.6+-blue.svg?style=flat-square)
 <a target="_blank" href="https://www.linkedin.com/in/foreverdev/">
 <img height="20" src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" /></a>
