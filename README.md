@@ -7,8 +7,8 @@
 
 # // My Chezmoi-powered Ultimate 💪 Dotfiles \\\
 
-This repo contains the configuration to have my personally preferred power-user experience \
-across any machines you have, using [Chezmoi](https://chezmoi.io), the dotfile manager. \
+This repository provides the setup for a personalized power-user \
+experience on any Linux machine utilizing [Chezmoi](https://chezmoi.io), the dotfile manager. \
 \> `zsh`, `tmux`, `i3wm`, `polybar`, `neovim`, `gtk3`, `urxvt` < \
 \
 *This automated setup is currently tested only on Arch-based machines.* \
