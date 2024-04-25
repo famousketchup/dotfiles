@@ -3,7 +3,7 @@
   editor = nvim
 [user]
   name = Dmitriy Korotayev
-  email = admin@foreverdev.pro
+  email = dmitriy@foreverdev.pro
 [alias]
   s = status
   b = branch
