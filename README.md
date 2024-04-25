@@ -42,7 +42,7 @@ My flavour of `Chezmoi`-driven dotfiles collection, with ❤️:
 ## 🔧 Simple installation 🔧
 
 ```sh
-export GITHUB_USERNAME=dmitriy-korotayev
+export GITHUB_USERNAME=famousketchup
 sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply $GITHUB_USERNAME 
 ```
 
