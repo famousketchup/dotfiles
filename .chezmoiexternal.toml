@@ -1,16 +1,14 @@
 [".config/nvim"]
-type = "archive"
-url = "https://github.com/dmitriy-korotayev/AstroNVim/archive/master.tar.gz"
+type = "git-repo"
+url = "git@github.com:famousketchup/AstroNVim.git"
 exact = true
-stripComponents = 1
 refreshPeriod = "168h"
 
 [".config/nvim/lua/user"]
-type = "archive"
-url = "https://github.com/dmitriy-korotayev/AstroNVimUser/archive/master.tar.gz"
+type = "git-repo"
+url = "git@github.com:famousketchup/AstroNVimUser.git"
 exact = true
-stripComponents = 1
-refreshPeriod = "168h"
+refreshPeriod = "12h"
 
 [".config/polybar-themes"]
 type = "archive"
@@ -29,14 +27,14 @@ refreshPeriod = "168h"
 
 [".i3/i3blocks"]
 type = "archive"
-url = "https://github.com/dmitriy-korotayev/i3blocks/archive/master.tar.gz"
+url = "https://github.com/famousketchup/i3blocks/archive/master.tar.gz"
 exact = true
 stripComponents = 1
 refreshPeriod = "168h"
 
 [".i3/i3-extras"]
 type = "archive"
-url = "https://github.com/dmitriy-korotayev/i3-extras/archive/master.tar.gz"
+url = "https://github.com/famousketchup/i3-extras/archive/master.tar.gz"
 exact = true
 stripComponents = 1
 refreshPeriod = "168h"
@@ -44,7 +42,7 @@ refreshPeriod = "168h"
 
 [".urxvt/dynamic-colors"]
 type = "archive"
-url = "https://github.com/dmitriy-korotayev/dynamic-colors/archive/master.tar.gz"
+url = "https://github.com/famousketchup/dynamic-colors/archive/master.tar.gz"
 exact = true
 stripComponents = 1
 refreshPeriod = "168h"
