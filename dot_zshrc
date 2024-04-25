@@ -20,6 +20,13 @@ export PATH="$HOME/bin:$PATH" # Add binaries from ~/bin to $PATH
 cowthink $(fortune -c) # Cow greeting you on launch
 export PS1="%~ $ " # Status in terminal
 
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 
 # Look
 
@@ -31,6 +38,10 @@ if [[ -z "$SSH_CONNECTION" ]] ; then
 
 ## TODO: Yaourt
 # export YAOURT_COLORS="nb=1:pkg=1:ver=1;32:lver=1;45:installed=1;42:grp=1;34:od=1;41;5:votes=1;44:dsc=0:other=1;35""
+
+# >Powerlevel10k: To customize prompt, run
+# `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 fi
 
@@ -463,6 +474,7 @@ alias myipinfo="curl ipinfo.io"
 
 ## >zsh
 function erc { $EDITOR ~/.zshrc; rerc }
+function eprc { $EDITOR ~/.p10k.zsh; rerc }
 function rerc { source ~/.zshrc }
 
 ## >polybar

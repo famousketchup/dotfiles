@@ -4,12 +4,8 @@ zmodule environment
 zmodule input
 
 zmodule archive
-zmodule magic-enter
-zmodule pvenv
 zmodule ssh
 zmodule utility
-
-zmodule duration-info
 
 zmodule joke/zim-chezmoi
 
@@ -20,4 +16,4 @@ zmodule zsh-users/zsh-autosuggestions
 zmodule zsh-users/zsh-syntax-highlighting
 
 zmodule b4b4r07/zsh-vimode-visual
-zmodule dmitriy-korotayev/zsh-nvm
+zmodule lukechilds/zsh-nvm
