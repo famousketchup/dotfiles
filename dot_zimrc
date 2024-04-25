@@ -13,7 +13,7 @@ zmodule duration-info
 
 zmodule joke/zim-chezmoi
 
-zmodule bira
+zmodule romkatv/powerlevel10k --use degit
 
 zmodule zsh-users/zsh-completions
 zmodule zsh-users/zsh-autosuggestions
