@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 
-cd ~
+cd $HOME
 ln -s .config/nvim .nvim
