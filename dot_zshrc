@@ -1,18 +1,25 @@
 # Environment
 
+## Import environment variables
 [[ -f ~/.zshenv ]] && source ~/.zshenv
+## Import machine-specific .zshrc
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
-export LANG="en_US.UTF-8"
-export BROWSER="firefox"
-export EDITOR="nvim"
+
+## Default apps
+export BROWSER='chromium'
+export EDITOR='nvim'
 export TERM='terminology'
+
+export LANG="en_US.UTF-8" # Default locale
 [[ -z "$SSH_CONNECTION" ]] && xset b off # Disable beeps
-export PATH="$HOME/bin:$PATH"
+export PATH="$HOME/bin:$PATH" # Add binaries from ~/bin to $PATH
+
 
 # Startup
 
 cowthink $(fortune -c) # Cow greeting you on launch
 export PS1="%~ $ " # Status in terminal
+
 
 # Look
 if [[ -z "$SSH_CONNECTION" ]] ; then
@@ -25,31 +32,6 @@ if [[ -z "$SSH_CONNECTION" ]] ; then
 # export YAOURT_COLORS="nb=1:pkg=1:ver=1;32:lver=1;45:installed=1;42:grp=1;34:od=1;41;5:votes=1;44:dsc=0:other=1;35""
 
 fi
-
-## Right-side statusline
-
-### Git functions
-
-function git_dirty {
-    [[ $(git status 2> /dev/null | tail -n1) != "nothing to commit, working directory clean" ]] && echo "*"
-}
-function git_current_branch {
-    git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e "s/* \(.*\)/[\1$(git_dirty)]/"
-}
-git_status() {
-    # If not an ssh mountpoint (this would be too slow to respond)
-    if [[ ! -n "$(mount | grep "$(pwd -P) type fuse\.sshfs" )" ]] then
-        echo "$ZSH_THEME_GIT_PROMPT_PREFIX$(git_current_branch)$ZSH_THEME_GIT_PROMPT_SUFFIX"
-    fi
-}
-
-function zle-line-init zle-keymap-select {
-    VIM_PROMPT="%{$fg_bold[yellow]%} [% NORMAL]%  %{$reset_color%}"
-    RPS1="${${KEYMAP/vicmd/$VIM_PROMPT}/(main|viins)/}$(git_status) $EPS1"
-    zle reset-prompt
-}
-zle -N zle-line-init
-zle -N zle-keymap-select
 
 
 # Input
@@ -107,7 +89,9 @@ setopt nohashdirs
 
 ## Auto-rehash on completion (in case new binaries were added to $PATH)
 zstyle ":completion:*:commands" rehash 1
-# TODO: if [ -f /etc/bash_completion ]; then source /etc/bash_completion; fi
+
+## Add bash_completions for a more wholesome experience
+if [ -f /etc/bash_completion ]; then source /etc/bash_completion; fi
 
 ## Don't complete uninteresting users
 zstyle ':completion:*:*:*:users' ignored-patterns \
@@ -119,7 +103,7 @@ zstyle ':completion:*:*:*:users' ignored-patterns \
 ## .... unless we really want to.
 zstyle '*' single-ignored show
 
-## ssh - config host entries
+## ssh - config host entries completion
 zstyle -s ':completion:*:hosts' hosts _ssh_config
 [[ -r ~/.ssh/config ]] && _ssh_config+=($(cat ~/.ssh/config | sed -ne 's/Host[=\t ]//p'))
 zstyle ':completion:*:hosts' hosts $_ssh_config
@@ -166,10 +150,86 @@ if [ -f /usr/share/fzf/completion.zsh ]; then source "/usr/share/fzf/completion.
 
 # Packages / Libraries / Tools
 
+## >nvim
+alias n="nvim"
+
+## >tmuxinator
+alias tx="tmuxinator"
+alias txn="tmuxinator new"
+alias txs="tmuxinator start"
+alias txsp="tmuxinator stop"
+alias txe="tmuxinator edit"
+alias txd="tmuxinator delete"
+alias txcp="tmuxinator copy"
+
+## >Chezmoi
+alias ch="chezmoi"
+alias cha="chezmoi add"
+alias chap="chezmoi apply"
+alias chr="chezmoi remove"
+alias chu="chezmoi update"
+alias chcd="chezmoi cd"
+alias chm="chezmoi merge"
+alias chma="chezmoi merge-all"
+alias chra="chezmoi re-add"
+alias chs="chezmoi status"
+
+## >NPM / Yarn
+### User-level global node modules
+export PATH="$HOME/.node_modules/bin:$PATH"
+export PATH="$HOME/.yarn/bin:$PATH"
+
+## >Python
+
+# More binaries
+export PATH=$HOME/.local/bin:$PATH
+
+# Auto-activate venv's
+python_venv() {
+  MYVENV=./venv
+  # when you cd into a folder that contains $MYVENV
+  [[ -d $MYVENV ]] && source $MYVENV/bin/activate > /dev/null 2>&1
+  # when you cd into a folder that doesn't
+  [[ ! -d $MYVENV ]] && deactivate > /dev/null 2>&1
+}
+autoload -U add-zsh-hook
+add-zsh-hook chpwd python_venv
+
+### pips(): pip install & save
+function pips() {
+  for pkg in $@; do
+    pip install "$pkg" && {
+      name="$(pip show "$pkg" | grep Name: | awk '{print $2}')";
+      version="$(pip show "$pkg" | grep Version: | awk '{print $2}')";
+      echo "${name}==${version}" >> requirements.txt;
+    }
+  done
+}
+
+# Autocompletions for `pipx`
+eval "$(register-python-argcomplete pipx)"
+
+# `IPython` default config directory
+export IPYTHONDIR=$HOME/.ipython/profile_default/
+
+### Add personal projects to import path
+export PYTHONPATH="$PYTHONPATH:venv/lib/python3.11/site-packages/:$HOME/Projects"
+
+## >> Sourcery plugin
+alias pysr="sourcery review ."
+
+## >Ruby
+#export GEM_HOME="$(ruby -e 'puts Gem.user_dir')"
+#export PATH="$PATH:$GEM_HOME/bin"
+
+## >RVM
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
+export PATH="$PATH:$HOME/.rvm/bin"
+
 ## >nnn
 export NNN_PLUG='f:finder;o:fzopen;p:mocq;d:diffs;t:nmount;v:imgview'
 # move pwd to recently closed directory by nnn
-n ()
+nn()
 {
     # Block nesting of nnn in subshells
     [ "${NNNLVL:-0}" -eq 0 ] || {
@@ -190,7 +250,7 @@ n ()
     # stty lwrap undef
     # stty lnext undef
 
-    # The command builtin allows one to alias nnn to n, if desired, without
+    # The command builtin allows one to alias nnn to nn, if desired, without
     # making an infinitely recursive alias
     command nnn "$@"
 
@@ -200,97 +260,12 @@ n ()
     }
 }
 
-## >Android Studio
-export ANDROID_SDK_ROOT="$HOME/.android/sdk"
-export ANDROID_HOME="$HOME/.android/sdk"
-export PATH="$ANDROID_SDK_ROOT/emulator:$ANDROID_SDK_ROOT/platform-tools/bin:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$PATH"
-
-## >NPM / Yarn
-### User-level global node modules
-export PATH="$HOME/.node_modules/bin:$PATH"
-export PATH="$HOME/.yarn/bin:$PATH"
-
-## >Python
-
-# Virtual environment aliases
-alias venvc="python3 -m venv venv"
-alias venvcreate="python3 -m venv venv"
-alias venva="source venv/bin/activate"
-alias venvactivate="source venv/bin/activate"
-alias venvi="python3 -m pip install --user virtualenv"
-alias venvinstall="python3 -m pip install --user virtualenv"
-alias venvd="deactivate"
-
-# Dependency and pip aliases
-alias pipi="pip install"
-alias pipu="pip uninstall"
-alias pipl="pip list"
-alias pipf="pip freeze > requirements.txt"
-alias pipr="pip install -r requirements.txt"
-
-# More binaries
-export PATH=$HOME/.local/bin:$PATH
-
-# Autocompletions
-eval "$(register-python-argcomplete pipx)"
-
-# IPython default config directory
-export IPYTHONDIR=$HOME/.ipython/profile_default/
-
-# auto-activate venv
-python_venv() {
-  MYVENV=./venv
-  # when you cd into a folder that contains $MYVENV
-  [[ -d $MYVENV ]] && source $MYVENV/bin/activate > /dev/null 2>&1
-  # when you cd into a folder that doesn't
-  [[ ! -d $MYVENV ]] && deactivate > /dev/null 2>&1
-}
-autoload -U add-zsh-hook
-add-zsh-hook chpwd python_venv
-
-### Add personal projects to import path
-export PYTHONPATH="$PYTHONPATH:venv/lib/python3.11/site-packages/:$HOME/Projects"
-
-### pips(): pip install & save
-function pips() {
-  for pkg in $@; do
-    pip install "$pkg" && {
-      name="$(pip show "$pkg" | grep Name: | awk '{print $2}')";
-      version="$(pip show "$pkg" | grep Version: | awk '{print $2}')";
-      echo "${name}==${version}" >> requirements.txt;
-    }
-  done
-}
-
-## >> Sourcery plugin
-alias pysr="sourcery review ."
-
-## >Chezmoi
-alias ch="chezmoi"
-alias cha="chezmoi add"
-alias chap="chezmoi apply"
-alias chr="chezmoi remove"
-alias chu="chezmoi update"
-alias chcd="chezmoi cd"
-alias chm="chezmoi merge"
-alias chma="chezmoi merge-all"
-alias chra="chezmoi re-add"
-alias chs="chezmoi status"
-
-## >Ruby
-#export GEM_HOME="$(ruby -e 'puts Gem.user_dir')"
-#export PATH="$PATH:$GEM_HOME/bin"
-
-## >RVM
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
-export PATH="$PATH:$HOME/.rvm/bin"
+## >PHP / Composer / wp-cli
+export PATH="$PATH:$HOME/.config/composer/vendor/bin"
 
 ## >ZMV
 ## http://onethingwell.org/post/24608988305/zmv
 autoload zmv
-
-## >Composer / wp-cli
-export PATH="$PATH:$HOME/.config/composer/vendor/bin"
 
 ## >Flatpak
 export XDG_DATA_DIRS="/var/lib/flatpak/exports/share:$HOME/.local/share/flatpak/exports/share:$XDG_DATA_DIRS"
@@ -298,6 +273,11 @@ export XDG_DATA_DIRS="/var/lib/flatpak/exports/share:$HOME/.local/share/flatpak/
 # >Torsocks
 #export LD_PRELOAD="/usr/lib/x86_64-linux-gnu/torsocks/libtorsocks.so"
 #source /usr/bin/torsocks on
+
+## >Android Studio
+export ANDROID_SDK_ROOT="$HOME/.android/sdk"
+export ANDROID_HOME="$HOME/.android/sdk"
+export PATH="$ANDROID_SDK_ROOT/emulator:$ANDROID_SDK_ROOT/platform-tools/bin:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$PATH"
 
 # >Java
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
@@ -311,7 +291,6 @@ export PATH=/opt/eclipse:$PATH
 
 ## Navigation
 alias x='cd "$(xplr --print-pwd-as-result)"'
-# alias x='xplr'
 alias .='pwd'
 alias ..='cd ..'
 alias ...='cd ../..'
@@ -342,7 +321,9 @@ alias cd..='cd ..'
 
 ## Directory sizes
 alias du1='du --max-depth=1'
+
 ## Search
+
 ### -recursively
 alias ff='find . -name $*'
 ### -in commands history
@@ -358,10 +339,7 @@ alias sls='sudo ls -hF --color=auto'
 alias sll='sudo ls -hFl --color=auto'
 alias sll='sudo ls -hFla --color=auto'
 
-# >btop
-alias b="btop"
-
-# >yay/pacman
+## >yay/pacman
 (( $+commands[yay] )) && package_manager='yay' || package_manager='sudo pacman'
 alias y="  $package_manager"                  # default action       - yay
 alias ys=" $package_manager -S"               # '[s]ync'             - install one or more packages
@@ -373,12 +351,14 @@ alias yss="$package_manager -Ss"              # '[Ss]earch'           - search f
 alias yi=" $package_manager -Si"              # '[i]nfo'             - show information about a package
 alias ylo="$package_manager -Qdt"             # '[l]ist [o]rphans'   - list all packages which are orphaned
 alias ylf="$package_manager -Ql"              # '[l]ist [f]iles'     - list all files installed by a given package
-# [yrefresh]: Use Reflector to populate mirrorlist with fastest mirrors
+### [yref]resh: Use Reflector to populate mirrorlist with fastest mirrors
 alias yref="sudo reflector --verbose --sort rate -c BE,CZ,DK,EE,FI,LT,NL,NO,PL,LV --protocol https --completion-percent 80 --save /etc/pacman.d/mirrorlist --download-timeout 60"
+### Remove pacman lock file
 alias yunlock="sudo rm /var/lib/pacman/db.lck"
+### Latest installed packages
 alias ylatest="expac --timefmt='%F %T' '%l %n' | sort -n | less"
 
-# >systemctl
+## >systemctl
 alias sy="sudo systemctl"
 alias sys="sudo systemctl start"
 alias sysp="sudo systemctl stop"
@@ -397,19 +377,30 @@ alias sue="systemctl --user enable"
 alias sud="systemctl --user disable"
 alias sudr="systemctl daemon-reload"
 
+## >Python
+
+# Virtual environment aliases
+alias venvc="python3 -m venv venv"
+alias venvcreate="python3 -m venv venv"
+alias venva="source venv/bin/activate"
+alias venvactivate="source venv/bin/activate"
+alias venvi="python3 -m pip install --user virtualenv"
+alias venvinstall="python3 -m pip install --user virtualenv"
+alias venvd="deactivate"
+
+# Dependency / `pip` aliases
+alias pipi="pip install"
+alias pipu="pip uninstall"
+alias pipl="pip list"
+alias pipf="pip freeze > requirements.txt"
+alias pipr="pip install -r requirements.txt"
 ## >xclip
 alias xc='xclip -selection clipboard'	# copy to clipboard, ctrl+c, ctrl+shift+c
 alias xcp='xclip -selection clipboard -o'	# paste from clipboard, ctrl+v, ctrl+shift+v
 alias xcs='xclip -selection primary -o'	# paste from highlight, middle click, shift+insert
 
-# >nordvpn
-alias nv="nordvpn"
-alias nvc="nordvpn c"
-alias nvs="nordvpn status"
-alias nvce="nordvpn c Estonia"
-alias nvcd="nordvpn c Double_VPN"
-alias nvco="nordvpn c Onion_Over_VPN"
-alias nvd="nordvpn disconnect"
+## >btop
+alias b="btop"
 
 # >vyprvpn
 alias vv="vyprvpn"
@@ -418,6 +409,15 @@ alias vvc="vyprvpn connect"
 alias vvd="vyprvpn disconnect"
 alias vvs="vyprvpn server" # [show | set | list]
 alias vvp="vyprvpn protocol" # [show | set | list]
+
+# >nordvpn
+# alias nv="nordvpn"
+# alias nvc="nordvpn c"
+# alias nvs="nordvpn status"
+# alias nvce="nordvpn c Estonia"
+# alias nvcd="nordvpn c Double_VPN"
+# alias nvco="nordvpn c Onion_Over_VPN"
+# alias nvd="nordvpn disconnect"
 
 # >gcalcli
 alias c="gcalcli"
@@ -447,15 +447,10 @@ alias st="speedtest-cli --no-upload --single --bytes"
 alias stogre="speedtest-cli --no-upload --single --bytes --server 22608"
 
 ## >journalctl
-jct() {
-    source torsocks off
-    journalctl $1
-    source torsocks on
-}
-jctr() { jct "-r" }
+jr() { jct "-r" }
 
 
-# Functions & custtom aliases (simple, mostly restarting)
+# Functions & custtom aliases (simple, mostly for restarting)
 
 ## ~Get my ip
 alias myip="curl ipinfo.io/ip"
@@ -496,19 +491,19 @@ f() {
     done
 }
 
-# -Open [n]ew terminal in cwd, optional repeat count
-n() {
+# -Open [n]ew [t]erminal in cwd, optional repeat count
+nt() {
     for i in {1..${1:=1}};
     do nohup $TERM >/dev/null 2>&1&;
     done
 }
 
 # -[c]opy via [rs]ync
-crs() {
+cr() {
   rsync --archive -hh --partial --info=stats1,progress2 --modify-window=1 "$@"
 }
 # -[m]ove via [rs]ync
-mrs() {
+mr() {
   rsync --archive -hh --partial --info=stats1,progress2 --modify-window=1 --remove-source-files "$@"
 }
 
@@ -536,14 +531,3 @@ zstyle :compinstall filename '/home/dmitriy/.zshrc'
 #unsetopt xtrace
 ### restore stderr to the value saved in FD 3
 #exec 2>&3 3>&-
-
-
-# ARCHIVE
-
-# >alias_for()
-#_aliases="$(alias -Lr 2>/dev/null || alias)"
-#alias_for() {
-  #[[ $1 =~ '[[:punct:]]' ]] && return
-  #local found="$( echo "$_aliases" | sed -nE "/^alias ${1}='?(.+)/s//\\1/p" )"
-  #[[ -n $found ]] && echo "${found%\'}"
-#}
