@@ -10,6 +10,7 @@ url = "git@github.com:famousketchup/AstroNVimUser.git"
 exact = true
 refreshPeriod = "12h"
 
+
 [".config/polybar-themes"]
 type = "archive"
 url = "https://github.com/adi1090x/polybar-themes/archive/master.tar.gz"
@@ -35,6 +36,14 @@ refreshPeriod = "168h"
 [".i3/i3-extras"]
 type = "archive"
 url = "https://github.com/famousketchup/i3-extras/archive/master.tar.gz"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
+
+[".tig/molokai-like-theme"]
+type = "archive"
+url = "https://github.com/edentsai/tig-theme-molokai-like/archive/master.tar.gz"
 exact = true
 stripComponents = 1
 refreshPeriod = "168h"

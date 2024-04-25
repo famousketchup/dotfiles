@@ -22,6 +22,7 @@ export PS1="%~ $ " # Status in terminal
 
 
 # Look
+
 if [[ -z "$SSH_CONNECTION" ]] ; then
 
 ## TODO: dynamic-colors (NEEDED?)
@@ -398,6 +399,9 @@ alias pipr="pip install -r requirements.txt"
 alias xc='xclip -selection clipboard'	# copy to clipboard, ctrl+c, ctrl+shift+c
 alias xcp='xclip -selection clipboard -o'	# paste from clipboard, ctrl+v, ctrl+shift+v
 alias xcs='xclip -selection primary -o'	# paste from highlight, middle click, shift+insert
+
+## >tig
+alias t="git show | tig"
 
 ## >btop
 alias b="btop"
