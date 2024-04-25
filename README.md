@@ -11,8 +11,8 @@ This repository provides the setup for a personalized power-user \
 experience on any Linux machine utilizing [Chezmoi](https://chezmoi.io), the dotfile manager. \
 \> `zsh`, `tmux`, `i3wm`, `polybar`, `neovim`, `gtk3`, `urxvt` < \
 \
-*This automated setup is currently tested only on Arch-based machines.* \
-In case dotfiles will be used by at least several users, I'll consider making it more universal. 🙃
+*At the moment, this automated setup has only been tested on `Arch`-based machines.* \
+Should these dotfiles be utilized by at least a few users, I will consider expanding its applicability. 🙃
 
 ![GitHub Release](https://img.shields.io/github/v/release/dmitriy-korotayev/dotfiles)
 ![Python Version](https://img.shields.io/badge/python-3.6+-blue.svg?style=flat-square)
@@ -31,13 +31,14 @@ In case dotfiles will be used by at least several users, I'll consider making it
 
 My flavour of `Chezmoi`-driven dotfiles collection, with ❤️:
 
-- [x] Powerful `zsh` config with many useful `zim` modules.
-- [x] Ansible bootstrap file `setup.yml` with all the necessary Arch Linux packages, used by me.
-- [x] Sane `.gitconfig` with short aliases and many more...
-- [x] Some of my preferred fonts in `.local/share/fonts`
-- [x] `GTK3` & `GTK2` styling configuration
-- [x] Basic, yet big and powerful `.tmux.conf`
-- [x] `urxvt` config included (`.Xresources` & some useful tools). Used as a terminal for weak or terminal-based machines.
+- [x] Highly effective `zsh` configuration with many useful `zim` modules, "aliases" that save time, and a lot more!
+- [x] Gorgeous `polybar` theme built by [@adi1090x](https://github.com/adi1090x/polybar-themes) and customized to meet my personal preferences.
+- [x] A sane `.gitconfig` file with minimal aliases and sensible defaults like "diff-so-fancy"...
+- [x] A big, mighty, yet rather fundamental '.tmux.conf' file.
+- [x] Provided in the Ansible Bootstrap file `setup.yml`, all the necessary Arch Linux`-based packages which I personally use.
+- [x] The '.local/share/fonts' directory includes a few of my favorite typefaces.
+- [x] `GTK3` & `GTK2` styling configuration.
+- [x] `urxvt` config (`.Xresources` and a couple of helpful tools) provided. Used as a terminal for low-powered or terminal-based devices.
 
 ## 🔧 Simple installation 🔧
 
